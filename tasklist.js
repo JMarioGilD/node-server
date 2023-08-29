@@ -35,12 +35,22 @@ function deleteTask() {
   rl.question('Número de tarea a eliminar: ', (taskNumber) => {
     const index = parseInt(taskNumber) - 1;
     if (index >= 0 && index < tasks.length) {
-      tasks.splice(index, 1);
-      console.log('Tarea eliminada con éxito.\n');
+      const taskToDelete = tasks[index];
+
+      // Solicitar confirmación antes de eliminar
+      rl.question(`¿Estás seguro de que deseas eliminar la tarea "${taskToDelete.indicator}: ${taskToDelete.description}"? (Si/No): `, (confirmation) => {
+        if (confirmation.toLowerCase() === 'si' || confirmation.toLowerCase() === 'si') {
+          tasks.splice(index, 1);
+          console.log('Tarea eliminada con éxito.\n');
+        } else {
+          console.log('Eliminación cancelada.\n');
+        }
+        showMenu();
+      });
     } else {
       console.log('¡Número de tarea inválido!\n');
+      showMenu();
     }
-    showMenu();
   });
 }
 
