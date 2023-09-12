@@ -1,4 +1,5 @@
 ¿Qué sucedio al usar async y await?
+
 Cuando use 'async' y 'await' en mi código, logre que el flujo de ejecución se pueda entender más facil en términos de asincronía. Aquí hay un resumen de lo que sucede al usar 'async' y 'await':
 
 1. 'async' en la función showMenu(): Al declarar la función showMenu() como 'async', puedo usar la palabra clave 'await' dentro de la función. Esto permite que la función espere a que las promesas se resuelvan antes de continuar con la ejecución del código. Esto hace que el código sea más legible, ya que parece que está siguiendo un flujo de ejecución sincrónico a pesar de estar trabajando con operaciones asincrónicas.
@@ -8,6 +9,7 @@ Cuando use 'async' y 'await' en mi código, logre que el flujo de ejecución se 
 3. Manejo de las funciones asíncronas: Para las operaciones asíncronas como ingresar una tarea, marcar una tarea como completada o eliminar una tarea, utilizas 'try...catch' para manejo de las promesas y permite mostrar mensajes adecuados en función del resultado de la operación.
 
 ¿Qué sucedio al usar el método then()?
+
 Al utilizar el método 'then()' en las funciones 'deleteTask()' y 'completeTask()' en mi código, lo que sucede es lo siguiente:
 
 1. Cuando llamamos a 'completeTask()' o 'deleteTask()', estas funciones devuelven una promesa que presenta la operación de completar una tarea o eliminar una tarea, respectivmente.
@@ -19,6 +21,7 @@ Al utilizar el método 'then()' en las funciones 'deleteTask()' y 'completeTask(
 4. Una vez que se completa la operación o se maneja el error, llamamos 'showMenu()' nuevamente para mostrar el menú principal y permitir que el usuario realice otra acción.
 
 ¿Qué diferencias encontraste entre async, await y el método then()?
+
 ASYNC/AWAIT
 La sintaxis es más legible y similar a la programación síncrona, lo que facilita la lectura y el mantenimiento del código. Con respecto a las palabras clave se debe marcar una función como 'async' para poder usar 'await' en ella. El 'await' se usa para esperar que una promesa se reuelva antes de continuar con la ejecución. Para el manejo de errores se puede usar 'try/catch' muy parecido a la programación síncrona, lo que facilita el manejo de excepciones. Tiene un flujo de control más lineal, lo que lo hace más sencilo de seguir.
 
