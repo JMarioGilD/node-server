@@ -32,31 +32,48 @@ function addTask() {
 
 // Función para eliminar una tarea
 function deleteTask() {
-  rl.question('Número de tarea a eliminar: ', (taskNumber) => {
-    const index = parseInt(taskNumber) - 1;
-    if (index >= 0 && index < tasks.length) {
-      tasks.splice(index, 1);
-      console.log('Tarea eliminada con éxito.\n');
-    } else {
-      console.log('¡Número de tarea inválido!\n');
-    }
-    showMenu();
+  return new Promise((resolve, reject) => {
+    rl.question('Número de tarea a eliminar: ', (taskNumber) => {
+      const index = parseInt(taskNumber) - 1;
+      if (index >= 0 && index < tasks.length) {
+        const taskToDelete = tasks[index];
+
+        rl.question(`¿Estás seguro de que deseas eliminar la tarea "${taskToDelete.indicator}: ${taskToDelete.description}"? (Si/No): `, (confirmation) => {
+          if (confirmation.toLowerCase() === 'si') {
+            tasks.splice(index, 1);
+            resolve('Tarea eliminada con éxito.');
+          } else {
+            reject('Eliminación cancelada.');
+          }
+        });
+      } else {
+        reject('¡Número de tarea inválido!');
+      }
+    });
   });
 }
 
-// Función para marcar una tarea como completada
-function completeTask() {
-  rl.question('Número de tarea completada: ', (taskNumber) => {
-    const index = parseInt(taskNumber) - 1;
-    if (index >= 0 && index < tasks.length) {
-      tasks[index].completed = true;
-      console.log('Tarea marcada como completada.\n');
-    } else {
-      console.log('¡Número de tarea inválido!\n');
-    }
-    showMenu();
+// Función para marcar una tarea como completada o pendiente
+function toggleTaskCompletion() {
+  return new Promise((resolve, reject) => {
+    rl.question('Número de tarea: ', (taskNumber) => {
+      const index = parseInt(taskNumber) - 1;
+      if (index >= 0 && index < tasks.length) {
+        const task = tasks[index];
+        if (task.completed) {
+          task.completed = false; // Marcar como pendiente
+          resolve(`La tarea "${task.indicator}: ${task.description}" se ha marcado como pendiente.`);
+        } else {
+          task.completed = true; // Marcar como completada
+          resolve(`La tarea "${task.indicator}: ${task.description}" se ha marcado como completada.`);
+        }
+      } else {
+        reject('¡Número de tarea inválido!');
+      }
+    });
   });
 }
+
 
 // Función para mostrar la lista de tareas
 function showTasks() {
@@ -69,8 +86,17 @@ function showTasks() {
   showMenu();
 }
 
+// Función para obtener entrada del usuario
+function getInput(question) {
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      resolve(answer);
+    });
+  });
+}
+
 // Función para mostrar el menú principal
-function showMenu() {
+async function showMenu() {
   console.log('Opciones:');
   console.log('1. Agregar nueva tarea');
   console.log('2. Ver lista de tareas');
@@ -78,29 +104,50 @@ function showMenu() {
   console.log('4. Eliminar tarea');
   console.log('5. Salir');
 
-  rl.question('Ingrese el número de la opción: ', (option) => {
-    switch (option) {
-      case '1':
-        addTask();
-        break;
-      case '2':
-        showTasks();
-        break;
-      case '3':
-        completeTask();
-        break;
-      case '4':
-        deleteTask();
-        break;
-      case '5':
-        rl.close();
-        break;
-      default:
-        console.log('¡Opción inválida!\n');
-        showMenu();
-        break;
-    }
-  });
+  const option = await getInput('Ingrese el número de la opción: ');
+
+  switch (option) {
+    case '1':
+      try {
+        const message = await addTask();
+        console.log(message);
+      } catch (error) {
+        console.log(error);
+      }
+      break;
+    case '2':
+      showTasks();
+      break;
+    case '3':
+      toggleTaskCompletion()
+        .then((message) => {
+          console.log(message);
+          showMenu();
+        })
+        .catch((error) => {
+          console.log(error);
+          showMenu();
+        });
+      break;
+    case '4':
+      deleteTask()
+        .then((message) => {
+          console.log(message);
+          showMenu();
+        })
+        .catch((error) => {
+          console.log(error);
+          showMenu();
+        });
+      break;
+    case '5':
+      rl.close();
+      break;
+    default:
+      console.log('¡Opción inválida!\n');
+      await showMenu();
+      break;
+  }
 }
 
 console.log('Bienvenido a la lista de tareas.');
