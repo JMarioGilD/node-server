@@ -53,20 +53,27 @@ function deleteTask() {
   });
 }
 
-// Función para marcar una tarea como completada
-function completeTask() {
+// Función para marcar una tarea como completada o pendiente
+function toggleTaskCompletion() {
   return new Promise((resolve, reject) => {
-    rl.question('Número de tarea completada: ', (taskNumber) => {
+    rl.question('Número de tarea: ', (taskNumber) => {
       const index = parseInt(taskNumber) - 1;
       if (index >= 0 && index < tasks.length) {
-        tasks[index].completed = true;
-        resolve('Tarea marcada como completada.');
+        const task = tasks[index];
+        if (task.completed) {
+          task.completed = false; // Marcar como pendiente
+          resolve(`La tarea "${task.indicator}: ${task.description}" se ha marcado como pendiente.`);
+        } else {
+          task.completed = true; // Marcar como completada
+          resolve(`La tarea "${task.indicator}: ${task.description}" se ha marcado como completada.`);
+        }
       } else {
         reject('¡Número de tarea inválido!');
       }
     });
   });
 }
+
 
 // Función para mostrar la lista de tareas
 function showTasks() {
@@ -112,7 +119,7 @@ async function showMenu() {
       showTasks();
       break;
     case '3':
-      completeTask()
+      toggleTaskCompletion()
         .then((message) => {
           console.log(message);
           showMenu();
